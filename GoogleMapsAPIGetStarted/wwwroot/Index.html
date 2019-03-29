@@ -1,9 +1,223 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <title>Index</title>
+    <title>Simple Map</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+        /* Always set the map height explicitly to define the size of the div
+        * element that contains the map. */
+        #mapDiv {
+            height: 100%;
+        }
+        /* Optional: Makes the sample page fill the window. */
+        html {
+            height: 100%;
+        }
+
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+
 </head>
 <body>
-    
+    <button id="btnTerrain">Terrain</button>
+    <button id="btnRoadmap">Roadmap</button>
+    <button id="btnSatellite">Satellite</button>
+    <button id="btnHybrid">Hybrid</button>
+    <div id="mapDiv"></div>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBxofwCrcGSjS6nwr7gD8JtsYxfTbpFqrc"></script>
+    <script type="text/javascript">
+        function initialize() {
+
+
+            //// https://marklewin.github.io/gmaps/latlongfinder/index.html Latitud and longitud finder
+            //var mapOptions = {
+            //    center: new google.maps.LatLng(23.981465, -103.674911),
+            //    zoom: 5,
+            //    disableDefaultUI: true,
+            //    zoomControl: true,
+            //    zoomControlOptions: {
+            //        style: google.maps.ZoomControlStyle.SMALL,
+            //        position: google.maps.ControlPosition.BOTTOM_LEFT
+            //    },
+            //    mapTypeControl: true,
+            //    mapTypeControlOptions: {
+            //        mapTypeIds: [google.maps.MapTypeId.ROADMAP, google.maps.MapTypeId.HYBRID],
+            //        style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
+            //    },
+            //    scaleControl: true,
+            //    streetViewControl: true,
+            //    rotateControl: true,
+            //    fullscreenControl: true
+            //};
+
+
+            var mapOptions = {
+                center: new google.maps.LatLng(52.344989, -3.048672),
+                zoom: 18,
+                disableDefaultUI: true,
+                zoomControl: true,
+                mapTypeControl: true,
+                scaleControl: true,
+                streetViewControl: true,
+                rotateControl: true,
+                fullscreenControl: true
+            };
+
+
+            var map = new google.maps.Map(document.getElementById('mapDiv'), mapOptions);
+
+            addButtons(map);
+
+            drawMarkers(map);
+            addPolyline(map);
+            addEditablePolygon(map);
+            addDraggableRectangle(map);
+            addCircle(map);
+        }
+
+        function addPolyline(map) {
+            var pathCoordinates = [
+                new google.maps.LatLng(52.343929, -3.049304),
+                new google.maps.LatLng(52.3440737, -3.0491620),
+                new google.maps.LatLng(52.3442474, -3.0494893),
+                new google.maps.LatLng(52.3443588, -3.0498272),
+                new google.maps.LatLng(52.3446243, -3.0500257),
+                new google.maps.LatLng(52.3451716, -3.0507070),
+                new google.maps.LatLng(52.3453617, -3.0509162),
+                new google.maps.LatLng(52.345478, -3.051058),
+                new google.maps.LatLng(52.345637, -3.051337),
+                new google.maps.LatLng(52.345715, -3.051653),
+                new google.maps.LatLng(52.345738, -3.051814),
+                new google.maps.LatLng(52.345918, -3.051873)
+            ];
+            var pathToCenter = new google.maps.Polyline({
+                path: pathCoordinates,
+                geodesic: false,
+                strokeColor: '#0000FF',
+                strokeOpacity: 1.0,
+                strokeWeight: 3
+            });
+            pathToCenter.setMap(map);
+        }
+
+        function drawMarkers(map) {
+
+            var image = "https://localhost:44336/images/truckmarker.png";
+
+            var centerMarker = new google.maps.Marker({
+                icon: image,
+                position: new google.maps.LatLng(52.345860, -3.051817),
+                map: map,
+                title: "Your shipment is here!"
+            });
+
+            var contentString = '<div id="content">' +
+                '<div id="siteNotice">' +
+                '</div>' +
+                '<h1 id="firstHeading" class="firstHeading">The Offa\'s Dyke Center</h1>' +
+                '<div id="bodyContent">' +
+                '<p>The <b>Offa\'s Dyke Center</b> is located in the middle of the pretty town of Knighton, in Powys.</p>' +
+                '<p>The Centre, opened in 1999, forms the focus for activities based on the 8th Century earthwork built ' +
+                'by <i>Offa</i>, the King of Mercia. The dyke follows the Welsh English border from the hills above ' +
+                'Prestatyn to the Severn Estuary near Chepstow. With its free exhibition and car park, the Centre caters' +
+                'for the needs of a wide range of visitors, from those taking toddlers to play in the surrounding park ' +
+                'and play area, to those exploring the border area by car, cycle or on foot, to education groups ' +
+                'studying the history of the area, and particularly that of Offas Dyke. There is something here ' +
+                'for everyone.</p>' +
+                '<img src="https://localhost:44336/images/truckmarker.png"/>' +
+                '<p>For more information, visit the center <a href="https://localhost:44336/images/truckmarker.png">web page</a>' +
+                '</div>' +
+                '</div>';
+
+            var infowindow = new google.maps.InfoWindow({
+                content: contentString
+            });
+
+            google.maps.event.addListener(centerMarker, 'click', function () {
+                infowindow.open(map, centerMarker);
+            });
+
+            var otherMarker = new google.maps.Marker({
+                icon: image,
+                position: new google.maps.LatLng(52.343866, -3.0492420),
+                map: map,
+                title: "Your shipment is here!!!!"
+            });
+        }
+
+        function addButtons(map) {
+            document.getElementById('btnTerrain').addEventListener('click', function () {
+                map.setMapTypeId(google.maps.MapTypeId.TERRAIN);
+            });
+            document.getElementById('btnHybrid').addEventListener('click', function () {
+                map.setMapTypeId(google.maps.MapTypeId.HYBRID);
+            });
+            document.getElementById('btnRoadmap').addEventListener('click', function () {
+                map.setMapTypeId(google.maps.MapTypeId.ROADMAP);
+            });
+            document.getElementById('btnSatellite').addEventListener('click', function () {
+                map.setMapTypeId(google.maps.MapTypeId.SATELLITE);
+            });
+        }
+
+        function addEditablePolygon(map) {
+            var natureCoords = [
+                new google.maps.LatLng(52.347295, -3.059607),
+                new google.maps.LatLng(52.347138, -3.061066),
+                new google.maps.LatLng(52.346351, -3.060465),
+                new google.maps.LatLng(52.345460, -3.060465),
+                new google.maps.LatLng(52.344569, -3.059864),
+                new google.maps.LatLng(52.344726, -3.058748)
+            ];
+            var natureArea = new google.maps.Polygon({
+                path: natureCoords,
+                strokeColor: "#FFFFFF",
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                fillColor: "#00FF00",
+                fillOpacity: 0.6,
+                editable: true
+            });
+            natureArea.setMap(map);
+        }
+
+        function addDraggableRectangle(map) {
+            var bounds = new google.maps.LatLngBounds(
+                new google.maps.LatLng(52.340308, -3.052557),
+                new google.maps.LatLng(52.340799, -3.050647)
+            );
+            var rectangle = new google.maps.Rectangle({
+                bounds: bounds,
+                map: map,
+                fillColor: "#00FF00",
+                fillOpacity: 0.6,
+                strokeColor: "#FF0000",
+                strokeOpacity: 0.8,
+                strokeWeight: 2,
+                draggable: true
+            });
+        }
+
+        function addCircle(map) {
+            var circle = new google.maps.Circle({
+                map: map,
+                center: new google.maps.LatLng(52.341049, -3.053942),
+                fillColor: "#FF33FF",
+                fillOpacity: 0.6,
+                strokeColor: "#FF0000",
+                strokeOpacity: 0.8,
+                strokeWeight: 2
+            });
+            circle.setRadius(58.222737);
+        }
+
+        google.maps.event.addDomListener(window, "load", initialize);
+
+    </script>
 </body>
 </html>

@@ -25,6 +25,7 @@ namespace GoogleMapsAPIGetStarted
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseDefaultFiles();
             app.UseStaticFiles();
 
         }
